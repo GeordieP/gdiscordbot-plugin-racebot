@@ -312,35 +312,17 @@ module.exports = function(creator_guildmember, game_name) {
 }
 
 const TIME_FORMAT = function(ms) {
-    let secs = Math.floor(ms / 1000)
-    let msleft = ms % 1000
-    
-    let hours = Math.floor(secs / (60 * 60))
-    if (hours.toString().length < 2) {
-        hours = "0" + hours
-    }
-    
-    let divisor_for_minutes = secs % (60 * 60)
-    let minutes = Math.floor(divisor_for_minutes / 60)
+    let hours = (ms / 3600000)
+    hours = ~~hours.toString()
+    ms -= hours * 3600000
 
-    if (minutes.toString().length < 2) {
-        minutes = "0" + minutes
-    }
+    let minutes = (ms / 60000)
+    minutes = ~~minutes.toString()
+    ms -= minutes * 60000
 
-    let divisor_for_seconds = divisor_for_minutes % 60
-    let seconds = Math.ceil(divisor_for_seconds)
+    let seconds = (ms / 1000)
+    seconds = ~~seconds.toString()
+    ms -= seconds * 1000
 
-    if (seconds.toString().length < 2) {
-        seconds = "0" + seconds
-    }
-
-    if (msleft.toString().length < 2) {
-        msleft = "0" + msleft
-    }
-
-    if (msleft.toString().length > 2) {
-        msleft = msleft.toString().slice(0, 2)
-    }
-
-    return hours +":"+ minutes +":"+ seconds +"."+ msleft
+    return (hours != '0' ? hours+':' : '') + (minutes < 10 ? '0'+minutes : minutes) + ':' + (seconds < 10 ? '0'+seconds : seconds) + '.' + (ms < 100 ? '0' : '') + (ms < 10 ? '0'+ms : ms)
 }
