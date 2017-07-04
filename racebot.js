@@ -80,7 +80,6 @@ module.exports = function() {
 
     api.print_entrants = function(cmd_msg, args) {
         let race_channel_name = cmd_msg.channel.name
-        let guildmember = cmd_msg.member
 
         if (!races.hasOwnProperty(race_channel_name)) {
             cmd_msg.reply("Either this is not a race channel, or the race was not found.")
@@ -88,6 +87,21 @@ module.exports = function() {
         }
 
         races[race_channel_name].print_entrants()
+            .catch(e => {
+                if (!e) return
+                cmd_msg.reply("Command failed: " + e)
+            })
+    }
+
+    api.race_print_time = function(cmd_msg, args) {
+        let race_channel_name = cmd_msg.channel.name
+
+        if (!races.hasOwnProperty(race_channel_name)) {
+            cmd_msg.reply("Either this is not a race channel, or the race was not found.")
+            return
+        }
+
+        races[race_channel_name].print_time()
             .catch(e => {
                 if (!e) return
                 cmd_msg.reply("Command failed: " + e)
@@ -160,7 +174,6 @@ module.exports = function() {
 
     api.race_delete = function(cmd_msg, args, return_promise = false) {
         let race_channel_name = cmd_msg.channel.name
-        let guildmember = cmd_msg.member
 
         if (!races.hasOwnProperty(race_channel_name)) {
             cmd_msg.reply("Either this is not a race channel, or the race was not found.")
@@ -193,7 +206,6 @@ module.exports = function() {
 
     api.race_keep = function(cmd_msg, args) {
         let race_channel_name = cmd_msg.channel.name
-        let guildmember = cmd_msg.member
 
         if (!races.hasOwnProperty(race_channel_name)) {
             cmd_msg.reply("Either this is not a race channel, or the race was not found.")
@@ -209,7 +221,6 @@ module.exports = function() {
 
     api.race_set_game = function(cmd_msg, args) {
         let race_channel_name = cmd_msg.channel.name
-        let guildmember = cmd_msg.member
 
         if (!races.hasOwnProperty(race_channel_name)) {
             cmd_msg.reply("Either this is not a race channel, or the race was not found.")
@@ -219,7 +230,7 @@ module.exports = function() {
         races[race_channel_name].set_game(args.join("_"))
             .then(new_race_name => {
                 cmd_msg.addReaction(EMOJI_CHECK_GREEN)
-                
+
                 // update races with new name
                 races[new_race_name] = races[race_channel_name]
                 delete races[race_channel_name]
@@ -232,7 +243,6 @@ module.exports = function() {
 
     api.race_set_goal = function(cmd_msg, args) {
         let race_channel_name = cmd_msg.channel.name
-        let guildmember = cmd_msg.member
 
         if (!races.hasOwnProperty(race_channel_name)) {
             cmd_msg.reply("Either this is not a race channel, or the race was not found.")
@@ -294,7 +304,6 @@ module.exports = function() {
 
     api.setcountdowntime = function(cmd_msg, args) {
         let race_channel_name = cmd_msg.channel.name
-        let guildmember = cmd_msg.member
 
         if (!races.hasOwnProperty(race_channel_name)) {
             cmd_msg.reply("Either this is not a race channel, or the race was not found.")

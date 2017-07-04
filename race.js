@@ -270,6 +270,16 @@ module.exports = function(creator_guildmember, game_name) {
         return this.channel.sendMessage(msg)
     }
 
+    api.print_time = () => {
+        if (this.state !== states.UNDERWAY) {
+            return Promise.reject("No race has been started.")
+        }
+
+        let formatted_time = TIME_FORMAT(Date.now() - this.race_start_time)
+        let msg = "Elapsed time: `" + formatted_time + "`"
+        return this.channel.sendMessage(msg)
+    }
+
     api.entrant_unenter = (guildmember) => {
         // handle illegal cases
         switch(true) {
