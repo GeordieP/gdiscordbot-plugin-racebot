@@ -214,7 +214,7 @@ module.exports = function(creator_guildmember, game_name) {
         }
 
         if (ready !== '') {
-            msg = msg.concat("\n**__READY__**")
+            msg = msg.concat((this.state === states.UNDERWAY) ? "\n**__RACING__**" : "\n**__READY__**")
                 .concat(ready.replace(REGEX_MATCH_LAST_COMMA, ""))
         }
 
