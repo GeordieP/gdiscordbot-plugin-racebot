@@ -12,7 +12,8 @@ const states = {
 let START_COUNTDOWN_LENGTH = 30   // seconds
 const CHANNEL_DELETE_TIMEOUT = 300000       // 5 minutes
 
-const CREATE_WELCOME_MSG = function(channel_name, creator_name, game_name) {
+const CREATE_WELCOME_MSG = function(channel_name, creator_name, game_name, goal = "") {
+    let goalstring = (goal) ? "' | Goal: '" + goal : ""
     return [
         "**Welcome to race channel " + channel_name + "**",
         "\n__Enter/Leave__",
@@ -24,7 +25,7 @@ const CREATE_WELCOME_MSG = function(channel_name, creator_name, game_name) {
         "\n__Ending Race__",
         "When you are finished, use command `!done` If you use this command by mistake, do `!undone` to re-enter the race",
         "Race will end automatically once all entrants are done or have forefitted",
-        "```js\nCreator: '" + creator_name + "' | Game: '" + game_name.replace("_", " ") + "'```",
+        "```js\nCreator: '" + creator_name + "' | Game: '" + game_name.replace("_", " ")  + goalstring + "'```",
     ]
 }
 
@@ -60,6 +61,7 @@ module.exports = function(creator_guildmember, game_name) {
     api.game = game_name
     api.name = api.game + "_" + this.race_create_time
     api.creator_guildmember = creator_guildmember
+    api.goal = ""
 
     /*---
     * methods
@@ -83,10 +85,25 @@ module.exports = function(creator_guildmember, game_name) {
 
         // update welcome message
         if (sent_welcome_msg_ref) {
-            sent_welcome_msg_ref.edit(CREATE_WELCOME_MSG(api.name, api.creator_guildmember.name, api.game))
+            sent_welcome_msg_ref.edit(CREATE_WELCOME_MSG(api.name, api.creator_guildmember.name, api.game, api.goal))
         }
 
         return Promise.resolve(api.name)
+    }
+
+    api.set_goal = (goal) => {
+        api.goal = goal
+
+        // update channel topic
+        if (this.channel) {
+            this.channel.update(api.name, api.goal)
+        }
+
+        // update welcome message
+        if (sent_welcome_msg_ref) {
+            sent_welcome_msg_ref.edit(CREATE_WELCOME_MSG(api.name, api.creator_guildmember.name, api.game, api.goal))
+        }
+        return Promise.resolve()
     }
 
     api.send_welcome_msg = (channel, creator_name, game_name) => {

@@ -11,6 +11,7 @@ module.exports = function(client) {
     client.registerCommand(['deleterace', 'dr'], racebot.race_delete)
     client.registerCommand(['keeprace', 'kr'], racebot.race_keep)
     client.registerCommand(['setgame', 'sg'], racebot.race_set_game)
+    client.registerCommand(['setgoal'], racebot.race_set_goal)
 
     // entrant commands
     client.registerCommand(['enter', 'e'], racebot.entrant_enter)
