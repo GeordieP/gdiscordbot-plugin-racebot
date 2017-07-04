@@ -17,7 +17,7 @@ module.exports = function() {
             return
         }
 
-        let game_name = args[0] || "no_game"
+        let game_name = args.join("_") || "no_game"
         let new_race = new Race(cmd_msg.member, game_name)
 
         races[new_race.name] = new_race
@@ -204,6 +204,23 @@ module.exports = function() {
             .catch(e => {
                 if (!e) return
                 cmd_msg.reply("Command failed: " + e)
+            })
+    }
+
+    api.race_set_game = function(cmd_msg, args) {
+        let race_channel_name = cmd_msg.channel.name
+        let guildmember = cmd_msg.member
+
+        if (!races.hasOwnProperty(race_channel_name)) {
+            cmd_msg.reply("Either this is not a race channel, or the race was not found.")
+            return
+        }
+
+        races[race_channel_name].set_game(args.join("_"))
+            .then(new_race_name => {
+                // update races with new name
+                races[new_race_name] = races[race_channel_name]
+                delete races[race_channel_name]
             })
     }
 

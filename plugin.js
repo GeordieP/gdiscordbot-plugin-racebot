@@ -10,6 +10,7 @@ module.exports = function(client) {
     client.registerCommand(['setcountdowntime', 'setcountdowntimer'], racebot.setcountdowntime)
     client.registerCommand(['deleterace', 'dr'], racebot.race_delete)
     client.registerCommand(['keeprace', 'kr'], racebot.race_keep)
+    client.registerCommand(['setgame', 'sg'], racebot.race_set_game)
 
     // entrant commands
     client.registerCommand(['enter', 'e'], racebot.entrant_enter)
