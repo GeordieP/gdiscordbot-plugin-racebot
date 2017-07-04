@@ -201,9 +201,7 @@ module.exports = function(creator_guildmember, game_name) {
         for (let key in this.entrants) {
             let entrant = this.entrants[key]
 
-            if (entrant.is_done()) {
-                done = done + "**[" + entrant.finish_place() + "]** " + entrant.name + " - `" + entrant.formatted_finish_time() + "`\n"
-            } else if (entrant.is_ready()) {
+            if (entrant.is_ready()) {
                 ready = ready + entrant.name + ', '
             } else {
                 entered = entered + entrant.name + ', '
@@ -220,9 +218,14 @@ module.exports = function(creator_guildmember, game_name) {
                 .concat(ready.replace(REGEX_MATCH_LAST_COMMA, ""))
         }
 
-        if (done !== '') {
+        if (this.finishers.length > 0) {
+            // there are finishers, add them to the output message
+            this.finishers.map(finisher => {
+                done = done + "**[" + finisher.finish_place() + "]** " + finisher.name + " - `" + finisher.formatted_finish_time() + "`\n"
+            })
+
             msg = msg.concat("\n**__DONE__**")
-                .concat(done.replace(REGEX_MATCH_LAST_COMMA, ""))
+                .concat(done)
         }
 
         return this.channel.sendMessage(msg)
