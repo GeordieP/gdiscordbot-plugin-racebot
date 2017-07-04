@@ -37,6 +37,10 @@ module.exports = function(guildmember) {
         this.done = true
         this.finish_time = finish_time
         this.formatted_finish_time = formatted_finish_time
+        api.set_finish_place(finish_place)
+    }
+
+    api.set_finish_place = (finish_place) => {
         this.finish_place = finish_place
     }
 

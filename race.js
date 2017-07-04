@@ -320,6 +320,32 @@ module.exports = function(creator_guildmember, game_name) {
         return Promise.resolve()
     }
 
+    api.entrant_undone = (guildmember) => {
+        // handle illegal cases
+        switch(true) {
+            case (!this.entrants.hasOwnProperty(guildmember.id)):
+                return Promise.reject("User appears to not have been in the race, an error may have occurred.")
+            case (!this.entrants[guildmember.id].is_done()):
+                return Promise.reject("User is not done.")
+        }
+
+        let the_entrant = this.entrants[guildmember.id]
+        let remove_index = this.finishers.indexOf(the_entrant)
+
+        // call undone and remove entrant
+        the_entrant.undone()
+        this.finishers.splice(remove_index, 1)
+
+        // reset finish place of each entrant
+        for (let i = remove_index; i < this.finishers.length; i++) {
+            this.finishers[i].set_finish_place(i + 1)
+        }
+
+        this.state = states.UNDERWAY
+
+        return Promise.resolve()
+    }
+
     api.check_all_done = () => Promise.resolve(Object.keys(this.entrants).length === this.finishers.length)
 
     api.set_countdown_time = (time) => {

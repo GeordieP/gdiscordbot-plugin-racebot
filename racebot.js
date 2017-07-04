@@ -231,6 +231,25 @@ module.exports = function() {
             })
     }
 
+    api.entrant_undone = function(cmd_msg, args) {
+        let race_channel_name = cmd_msg.channel.name
+        let guildmember = cmd_msg.member
+
+        if (!races.hasOwnProperty(race_channel_name)) {
+            cmd_msg.reply("Either this is not a race channel, or the race was not found.")
+            return
+        }
+
+        races[race_channel_name].entrant_undone(guildmember)
+            .then(() => {
+                cmd_msg.addReaction(EMOJI_CHECK_GREEN)
+            })
+            .catch(e => {
+                if (!e) return
+                cmd_msg.reply("Command failed: " + e)
+            })
+    }
+
     api.setcountdowntime = function(cmd_msg, args) {
         let race_channel_name = cmd_msg.channel.name
         let guildmember = cmd_msg.member
