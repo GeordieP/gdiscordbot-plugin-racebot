@@ -23,15 +23,11 @@ module.exports = function() {
         races[new_race.name] = new_race
 
         cmd_msg.guild.createChannel(0, new_race.name)
-            .then(race_text_channel => {
-                return new_race.set_channel(race_text_channel)
-            })
-            .then(race_text_channel => {
-                return new_race.send_welcome_msg(race_text_channel, cmd_msg.member.name, game_name)
-            })
-            .then(welcome_msg => {
-                return cmd_msg.reply("Race has been created. Join channel <#" + welcome_msg.channel.id + ">")
-            })
+            .then(race_text_channel => new_race.set_channel(race_text_channel))
+            .then(race_text_channel => new_race.send_welcome_msg(race_text_channel, cmd_msg.member.name, game_name))
+            .then(welcome_msg => cmd_msg.reply("Race has been created. Join channel <#" + welcome_msg.channel.id + ">"))
+            .then(creation_msg => new_race.set_creation_msg_ref(creation_msg))
+            .then(() => cmd_msg.delete())
             .catch(e => {
                 if (!e) return
                 cmd_msg.reply("Error creating race: " + e)

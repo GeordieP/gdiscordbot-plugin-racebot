@@ -37,6 +37,7 @@ const DISPLAY_MSG_AT_TIMES = [20, 10, 5]
 // keep references to already sent messages so we can manage them later
 let sent_welcome_msg_ref = null
 let sent_countdown_msg_ref = null
+let sent_creation_msg_ref = null
 
 // for printing entrants lists
 const REGEX_MATCH_LAST_COMMA = /,\s*$/
@@ -91,6 +92,10 @@ module.exports = function(creator_guildmember, game_name) {
         return Promise.resolve(api.name)
     }
 
+    api.set_creation_msg_ref = (msg) => { 
+        sent_creation_msg_ref = msg
+    }
+
     api.set_goal = (goal) => {
         api.goal = goal
 
@@ -128,7 +133,10 @@ module.exports = function(creator_guildmember, game_name) {
             return this.channel.sendMessage(msg)
                 .then(msg => {
                     this.delete_channel_timeout = setTimeout(() => {
-                        return this.channel.delete()
+                        return sent_creation_msg_ref.delete()
+                            .then(() => {
+                                return this.channel.delete()
+                            })
                             .then(() => {
                                 resolve()
                             })
